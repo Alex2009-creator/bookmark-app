@@ -10,7 +10,10 @@
     </header>
     <main class="box-main">
       <div class="box-main__sidebar">
-        <h2 class="box-main__title"></h2>
+        <div class="box-main__photo">
+          <img src="./assets/user-photo.png" class="box-main__img" />
+        </div>
+        <h2 class="box-main__title">Добро пожаловать, Наталья!</h2>
       </div>
       <div class="box-main__container"></div>
     </main>
@@ -23,8 +26,27 @@
   background-color: var(--background-bg);
 }
 
+.box-header {
+  height: 190px;
+}
+
 .box-main {
-  padding: 50px;
+  padding: 0 50px;
+}
+
+.box-main__sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.box-main__photo {
+  width: auto;
+}
+
+.box-main__img {
+  width: 130px;
+  height: 130px;
 }
 
 .box-main__title {
