@@ -1,34 +1,15 @@
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
-  import Card from './components/RelaxCard.vue'
+  import { onMounted } from 'vue'
+  import RelaxCard from './components/RelaxCard.vue'  
+  import { useRelaxStore } from './stores/relax.store';
 
-  const meditations = ref([]);
-  const status = ref('idle');  // начальный статус
-
-  const fetchMeditations = async () => {
-    status.value = 'loading';
-    try {      
-      const response = await fetch('http://localhost:3000/api/meditations');
-
-      if (!response.ok) {
-      throw new Error(`Ошибка сервера: ${response.status}`);
-    }
-
-      const result = await response.json();
-
-      // Сохраняем массив из вложенного объекта data.meditations
-      meditations.value = result.data.meditations;
-      status.value = 'success';
-
-    } catch (error) {
-        console.error('Ошибка при загрузке:', error);
-        status.value = 'error';
-    }
-  };
+  const store = useRelaxStore()
 
   // Запускаем загрузку при монтировании
   onMounted(() => {
-    fetchMeditations();
+    if (store.items.length === 0) {
+      store.fetchMeditations();
+  }
   });
 </script>
 
@@ -50,7 +31,7 @@
 
       <!-- Загрузка -->
       <div
-        v-if="status === 'loading'"
+        v-if="store.status === 'loading'"
         class="box-main__container">
       >
         Загрузка данных...
@@ -58,16 +39,19 @@
 
       <!-- Ошибка -->
       <div
-        v-else-if="status === 'error'"
+        v-else-if="store.status === 'error'"
         class="box-main__error"
       >
         Не удалось загрузить данные. Проверьте, запущен ли сервер.
       </div>
 
       <!-- Отображение данных -->
-      <div v-else class="box-main__container">
-        <Card
-          v-for="item in meditations"
+      <div
+        v-else-if="store.status === 'success'"
+        class="box-main__container"
+      >
+        <RelaxCard
+          v-for="item in store.items"
           :key="item.id"
           :title="item.title"
           :description="item.description"

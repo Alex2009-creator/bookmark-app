@@ -1,9 +1,5 @@
 <script setup lang="ts">
-    type CardProps = {
-        title: String,
-        description: String,
-        duration: Number,
-    }
+    import type { CardProps } from '@/interfaces/cardprops.interface'
 
     const {
         title,
