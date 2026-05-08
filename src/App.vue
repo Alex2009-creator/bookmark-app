@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted } from 'vue'
+  import Card from './components/RelaxCard.vue'
 
   const meditations = ref([]);
   const status = ref('idle');  // начальный статус
@@ -65,16 +66,13 @@
 
       <!-- Отображение данных -->
       <div v-else class="box-main__container">
-        <div
+        <Card
           v-for="item in meditations"
           :key="item.id"
-          :data-status="status"
-          class="box-main-card"
-        >
-          <h1 class="box-main-card__title">{{ item.title }}</h1>
-          <p>{{ item.description }}</p>
-          <p> {{ item.duration_min }} мин.</p>
-        </div>
+          :title="item.title"
+          :description="item.description"
+          :duration="item.duration_min"
+        />        
       </div>
     </main>
   </div>
@@ -124,14 +122,6 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    padding: 20px;
-  }
-
-  .box-main-card {
-    width: 340px;
-    height: 170px;
-    border-radius: 20px;
-    background-color: var(--background-card);
     padding: 20px;
   }
 
