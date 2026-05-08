@@ -5,7 +5,7 @@ import ButtonStart from './ButtonStart.vue';
     const {
         title,
         description,
-        duration
+        duration_min
     } = defineProps<CardProps>();
 </script>
 
@@ -15,7 +15,7 @@ import ButtonStart from './ButtonStart.vue';
         <p class="box-main-card__text">{{ description }}</p>
         <div class="box-main-card-container">
             <ButtonStart />
-            <p class="box-main-card__label">{{ duration }} мин</p>
+            <p class="box-main-card__label">{{ duration_min }} мин</p>
         </div>
     </div>
 </template>

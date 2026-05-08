@@ -32,7 +32,7 @@
       <!-- Загрузка -->
       <div
         v-if="store.status === 'loading'"
-        class="box-main__container">
+        class="box-main__container"
       >
         Загрузка данных...
       </div>
@@ -55,7 +55,7 @@
           :key="item.id"
           :title="item.title"
           :description="item.description"
-          :duration="item.duration_min"
+          :duration_min="item.duration_min"
         />        
       </div>
     </main>
