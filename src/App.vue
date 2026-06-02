@@ -11,6 +11,9 @@
         <img src="./assets/logo.png" class="box-header__img" />
       </div>
       <div class="box-header-nav">
+        <router-link to="/login" class="box-header-nav__item">          
+          <p class="box-header-nav__text">Вход</p>
+        </router-link>
         <router-link to="/" class="box-header-nav__item">
           <IconPlay />
           <p class="box-header-nav__text">Медитация</p>
