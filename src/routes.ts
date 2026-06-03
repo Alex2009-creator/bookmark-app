@@ -4,12 +4,20 @@ import Statistic from './components/Statistic.vue'
 import LoginView from './components/LoginView.vue'
 
 export const router = createRouter({
-    routes: [{
-        path: '/', component: Home,
-    }, {
-        path: '/statistic', component: Statistic,
-    }, {
-        path: '/login', component: LoginView,
-    }],
-    history: createWebHistory()
+  routes: [
+    {
+      path: '/',
+      component: Home,
+    },
+    {
+      path: '/statistic',
+      component: Statistic,
+    },
+    {
+      path: '/login',
+      component: LoginView,
+      meta: { requiresAuth: false, hideHeader: true }, // Добавили флаг
+    },
+  ],
+  history: createWebHistory(),
 })

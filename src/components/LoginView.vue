@@ -1,174 +1,129 @@
 <template>
-    <div class="auth-login"> 
-        <div class="auth-login__logo">
-            <img src="../assets/logo-auth.png" class="auth-content__img" />        
-        </div>   
-        <div class="login-form-container">
-            <!-- Общая ошибка, если сервер вернет 401 или другую проблему -->
-            <div v-if="formError" class="form-summary-error">
-            {{ formError }}
-            </div>
-
-            <form @submit.prevent="handleLogin" novalidate>
-            <!-- Поле Пользователь (Логин/Email) -->
-            <BaseInput
-                v-model="username"                
-                placeholder="Имя пользователя"
-                autocomplete="username"
-                :disabled="isLoading"
-                :error="errors.username"
-            />
-
-            <!-- Поле Пароль -->
-            <BaseInput
-                v-model="password"                
-                type="password"
-                placeholder="Пароль"
-                autocomplete="current-password"
-                :disabled="isLoading"
-                :error="errors.password"
-            />
-
-            <!-- Кнопка отправки формы -->
-            <button 
-                type="submit" 
-                class="submit-btn" 
-                :disabled="isLoading"
-            >
-                {{ isLoading ? 'Вход...' : 'Войти в приложение' }}
-            </button>
-            </form>
-        </div>
+  <div class="auth-login">
+    <div class="auth-login__logo">
+      <img src="../assets/logo-auth.png" class="auth-login__img" />
     </div>
+    <div class="auth-login-form">
+      <!-- Общая ошибка, если сервер вернет 401 или другую проблему -->
+      <div v-if="authStore.errorMessage" class="auth-login-form-error">
+        {{ authStore.errorMessage }}
+      </div>
+
+      <form @submit.prevent="handleLogin" novalidate>
+        <!-- Поле Пользователь (Логин/Email) -->
+        <BaseInput
+          v-model="username"
+          placeholder="Имя пользователя"
+          autocomplete="username"
+          :disabled="authStore.isLoading"
+          :error="errors.username"
+        />
+
+        <!-- Поле Пароль -->
+        <BaseInput
+          v-model="password"
+          type="password"
+          placeholder="Пароль"
+          autocomplete="current-password"
+          :disabled="authStore.isLoading"
+          :error="errors.password"
+        />
+
+        <!-- Кнопка отправки формы -->
+        <button type="submit" class="auth-login-form-submit" :disabled="authStore.isLoading">
+          {{ authStore.isLoading ? 'Вход...' : 'Войти в приложение' }}
+        </button>
+      </form>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-    import { ref, reactive } from 'vue'
-    import BaseInput from './AppInput.vue'
+import { ref, reactive } from 'vue'
+import BaseInput from './AppInput.vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth.store'
 
-    // Состояния полей формы
-    const username = ref('')
-    const password = ref('')
+const authStore = useAuthStore()
+const router = useRouter()
 
-    // Состояния процесса отправки и глобальной ошибки
-    const isLoading = ref(false)
-    const formError = ref('')
+// Состояния полей формы
+const username = ref('')
+const password = ref('')
 
-    // Объект для хранения ошибок валидации отдельных полей
-    const errors = reactive({
-    username: '',
-    password: ''
-    })
+// Объект для хранения ошибок валидации отдельных полей (фронтенд-валидация)
+const errors = reactive({
+  username: '',
+  password: '',
+})
 
-    // Простая валидация перед отправкой
-    const validateForm = () => {
-        let isValid = true
-        
-        // Валидация пользователя
-        if (!username.value.trim()) {
-            errors.username = 'Поле обязательно для заполнения'
-            isValid = false
-        } else {
-            errors.username = ''
-        }
+const handleLogin = async () => {
+  // Простая валидация перед отправкой
+  errors.username = !username.value ? 'Введите имя пользователя' : ''
+  errors.password = !password.value ? 'Введите пароль' : ''
 
-        // Валидация пароля
-        if (!password.value) {
-            errors.password = 'Введите пароль'
-            isValid = false
-        } else if (password.value.length < 6) {
-            errors.password = 'Пароль должен быть не менее 6 символов'
-            isValid = false
-        } else {
-            errors.password = ''
-        }
+  if (errors.username || errors.password) return
 
-        return isValid
-    }
+  // Вызываем экшен из стора, передавая объект
+  const success = await authStore.login({
+    username: username.value,
+    password: password.value,
+  })
 
-    // Обработчик отправки формы
-    const handleLogin = async () => {
-        formError.value = ''
-        
-        // Если валидация не прошла, прерываем отправку
-        if (!validateForm()) return
-
-        try {
-            isLoading.value = true
-            
-            // Имитация запроса к API (замените на ваш axios/fetch/pinia action)
-            await new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Пример проверки для демонстрации ошибки сервера
-                if (username.value === 'admin' && password.value === '123456') {
-                    resolve()
-                } else {
-                    reject(new Error('Неверное имя пользователя или пароль'))
-                }
-            }, 1500)
-            })
-
-            alert('Успешная авторизация!')
-            // Здесь обычно идет редирект: router.push('/dashboard')
-
-        } catch (error) {
-            // Выводим ошибку, полученную от сервера
-            formError.value = error.message || 'Произошла ошибка при входе'
-        } finally {
-            isLoading.value = false
-        }
-    }
+  if (success) {
+    router.push('/')
+  }
+}
 </script>
 
 <style scoped>
-    .auth-content {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background-image: url("../assets/bg-form.png");
-    }
-    .auth-content__img {
-        width: 202px;
-        height: 213px;
-    }
+.auth-login {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url('../assets/bg-form.png');
+  background-size: cover;
+  background-position: center;
+}
+.auth-login__img {
+  width: 202px;
+  height: 213px;
+}
 
-    .login-form-container {
-        padding: 10px;
-        background: transparent;
-    }
+.auth-login-form {
+  padding: 10px;
+  background: transparent;
+}
 
-    .form-summary-error {
-        padding: 12px;
-        margin-bottom: 20px;
-        background-color: #fde8e8;
-        border: 1px solid #f8b4b4;
-        border-radius: 4px;
-        color: #e74c3c;
-        font-size: 14px;
-    }
+.auth-login-form-error {
+  margin-bottom: 20px;
+  background-color: transparent;
+  border: none;
+  color: #e74c3c;
+  font-size: 14px;
+  text-align: center;
+}
 
-    .submit-btn {
-        width: 100%;
-        min-width: 320px;
-        margin-top: 55px;
-        padding: 16px 8px;
-        background-color: var(--background-btn); /* Цвет Vue */
-        color: white;
-        border: none;
-        border-radius: 10px;
-        font-size: 25px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
+.auth-login-form-submit {
+  width: 100%;
+  min-width: 320px;
+  margin-top: 55px;
+  padding: 16px 8px;
+  background-color: var(--background-btn); /* Цвет Vue */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 25px;
+  font-weight: bold;
+  font-family: Alegreya Sans;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
 
-    .submit-btn:hover:not(:disabled) {
-        background-color: #35495e;
-    }
-
-    .submit-btn:disabled {
-        background-color: #a8ebd0;
-        cursor: not-allowed;
-    }
+.auth-login-form-submit:hover {
+  background-color: #35495e;
+}
 </style>
