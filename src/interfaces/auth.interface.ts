@@ -16,3 +16,11 @@ export interface ErrorResponse {
   status: 'error'
   message: string
 }
+
+// Регистрация
+
+export interface RegisterPayload {
+  username: string
+  email: string
+  password: string
+}
