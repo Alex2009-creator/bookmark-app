@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import RelaxCard from './RelaxCard.vue'
 import { useRelaxStore } from '../stores/relax.store'
+import ProfileView from './ProfileView.vue'
 
 const store = useRelaxStore()
 
@@ -21,6 +22,7 @@ onMounted(() => {
       </div>
       <h2 class="box-main__title">Добро пожаловать, Наталья!</h2>
       <p class="box-main__description">Как вы сегодня себя чувствуете?</p>
+      <ProfileView />
       <div class="box-main-container">
         <div class="box-main-container-icon">
           <div class="box-main-container-icon__img">

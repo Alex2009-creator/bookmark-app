@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.store'
+import { useProfileStore } from '../stores/profile.store'
 import IconPlay from './icons/IconPlay.vue'
 import IconChart from './icons/IconChart.vue'
 import IconExit from './icons/IconExit.vue'
 
 const authStore = useAuthStore()
+const profileStore = useProfileStore() // Подключаем profileStore
 const router = useRouter()
 
 // Функция для обработки выхода
 async function handleLogout() {
-  console.log('Метод выхода запущен')
-  authStore.logout()
+  profileStore.clearProfile() // 1. Сначала очищаем данные профиля
+  authStore.logout()          // 2. Стираем токен
   await router.push('/login')
 }
 </script>
