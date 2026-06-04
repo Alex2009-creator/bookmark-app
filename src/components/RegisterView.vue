@@ -1,12 +1,12 @@
 <template>
   <div class="auth-register">
     <div class="auth-register__logo">
-      <img src="../assets/logo-auth.png" class="auth-content__img" />
+      <img src="../assets/logo-auth.png" class="auth-register__img" />
     </div>
 
-    <div class="register-form-container">
+    <div class="auth-register-form">
       <!-- Ошибка с бэкенда -->
-      <div v-if="authStore.errorMessage" class="form-summary-error">
+      <div v-if="authStore.errorMessage" class="auth-register-error">
         {{ authStore.errorMessage }}
       </div>
 
@@ -41,22 +41,24 @@
         />
 
         <!-- Кнопка отправки -->
-        <button type="submit" class="submit-btn" :disabled="authStore.isLoading">
+        <button type="submit" class="auth-register-submit" :disabled="authStore.isLoading">
           {{ authStore.isLoading ? 'Регистрация...' : 'Создать аккаунт' }}
         </button>
       </form>
 
       <!-- Ссылка на страницу логина -->
-      <div class="auth-link-container">
-        Уже есть аккаунт? <router-link to="/login">Войти</router-link>
-      </div>
+      <div class="auth-register-login">
+        <router-link to="/login" class="auth-register-login__link">
+          <span class="auth-register-login__text">Войти</span>
+        </router-link>
+    </div> 
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import BaseInput from './AppInput.vue' // убедитесь в правильности пути к вашему AppInput.vue
+import BaseInput from './AppInput.vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.store'
 
@@ -87,16 +89,24 @@ const handleRegister = async () => {
 
   if (errors.username || errors.email || errors.password) return
 
-  // Вызываем метод стора
-  const success = await authStore.register({
+  // 1. Регистрируем пользователя
+  const isRegistered = await authStore.register({
     username: username.value,
     email: email.value,
     password: password.value,
   })
 
-  if (success) {
-    // После успешной регистрации отправляем на главную
-    router.push('/')
+  if (isRegistered) {
+    // 2. Автоматически логиним пользователя, используя те же данные
+    const isLoggedIn = await authStore.login({
+      username: username.value,
+      password: password.value,
+    })
+
+    if (isLoggedIn) {
+      // 3. Только теперь отправляем на главную
+      router.push('/')
+    }
   }
 }
 </script>
@@ -113,44 +123,56 @@ const handleRegister = async () => {
   background-size: cover;
   background-position: center;
 }
-.register-form-container {
+
+.auth-register__img {
+  width: 202px;
+  height: 213px;
+}
+
+.auth-register-form {
   padding: 10px;
   background: transparent;
 }
-.form-summary-error {
-  padding: 12px;
+
+.auth-register-error {
   margin-bottom: 20px;
-  background-color: #fde8e8;
-  border: 1px solid #f8b4b4;
-  border-radius: 4px;
-  color: #e74c3c;
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-error);
   font-size: 14px;
+  text-align: center;
 }
-.submit-btn {
+
+.auth-register-submit {
   width: 100%;
   min-width: 320px;
-  margin-top: 40px;
+  margin-top: 55px;
   padding: 16px 8px;
   background-color: var(--background-btn);
   color: white;
   border: none;
   border-radius: 10px;
   font-size: 25px;
+  font-weight: bold;
+  font-family: Alegreya Sans;
   font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
-.submit-btn:disabled {
-  background-color: #a8ebd0;
+
+.auth-register-login {
+    margin: 20px 0;
+    padding: 10px;
+    text-align: center;
 }
-.auth-link-container {
-  margin-top: 20px;
-  text-align: center;
-  color: #555;
-  font-size: 16px;
+
+.auth-register-login__link {
+    text-decoration: none;
+    color: var(--background-btn);
 }
-.auth-link-container a {
-  color: var(--background-btn);
-  font-weight: bold;
-  text-decoration: none;
+
+.auth-register-login__link:hover {
+    background-color: transparent;
+    color: var(--color-text-primary);
 }
 </style>

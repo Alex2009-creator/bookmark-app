@@ -58,9 +58,11 @@ const model = defineModel({ type: String, default: '' })
 }
 
 .base-input-field {
-  font-family: Alegreya Sans;
+  font-family: Alegreya Sans, sans-serif;
   font-size: 18px;
-  width: 305px;
+  width: 100%;
+  max-width: 320px;
+  box-sizing: border-box;
   padding: 10px 12px;
   color: var(--color-text-primary);
   background-color: transparent;

@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-// Добавляем импорт RegisterPayload
-import type { LoginResponse, ErrorResponse, LoginPayload, RegisterPayload } from './auth.types'
+import type { LoginPayload, RegisterPayload } from '../interfaces/auth.interface'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(localStorage.getItem('user-token'))
@@ -10,13 +9,41 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed<boolean>(() => !!token.value)
 
-  // --- Метод логина (уже есть у вас) ---
+  // --- МЕТОД ЛОГИНА ---
   async function login({ username, password }: LoginPayload): Promise<boolean> {
-    /* Ваш текущий код логина */
-    return true
+    isLoading.value = true
+    errorMessage.value = null
+
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || data.status === 'error') {
+        throw new Error(data.message || 'Неверное имя пользователя или пароль')
+      }
+
+      // Добавлена проверка data.data?.token
+      if (data.data && data.data.token) {
+        token.value = data.data.token
+        localStorage.setItem('user-token', data.data.token)
+        return true
+      } else {
+        throw new Error('Сервер не вернул токен авторизации')
+      }
+    } catch (error: any) {
+      errorMessage.value = error.message || 'Ошибка сети при авторизации'
+      return false
+    } finally {
+      isLoading.value = false
+    }
   }
 
-  // --- НОВЫЙ МЕТОД: Регистрация ---
+  // --- МЕТОД РЕГИСТРАЦИИ ---
   async function register({ username, email, password }: RegisterPayload): Promise<boolean> {
     isLoading.value = true
     errorMessage.value = null
@@ -30,19 +57,17 @@ export const useAuthStore = defineStore('auth', () => {
 
       const data = await response.json()
 
-      // Проверяем ошибки бэкенда
-      if (!response.ok || (data as ErrorResponse).status === 'error') {
-        const errorData = data as ErrorResponse
-        throw new Error(errorData.message || 'Произошла ошибка при регистрации')
+      if (!response.ok || data.status === 'error') {
+        throw new Error(data.message || 'Произошла ошибка при регистрации')
       }
 
-      // Если ваш бэкенд после регистрации СРАЗУ возвращает токен (автоматический вход)
-      if (data.token) {
-        token.value = data.token
-        localStorage.setItem('user-token', data.token)
+      // Проверяем токен по правильному пути на случай авто-входа после регистрации
+      if (data.data && data.data.token) {
+        token.value = data.data.token
+        localStorage.setItem('user-token', data.data.token)
       }
 
-      return true // Успешно зарегистрирован
+      return true 
     } catch (error: any) {
       errorMessage.value = error.message || 'Ошибка сети при регистрации'
       return false
@@ -56,14 +81,13 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('user-token')
   }
 
-  // ОБЯЗАТЕЛЬНО добавляем register в возвращаемый объект
   return {
     token,
     isLoading,
     errorMessage,
     isAuthenticated,
     login,
-    register, // <- добавили сюда
+    register,
     logout,
   }
 })
