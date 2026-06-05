@@ -1,19 +1,21 @@
 import type { CardProps } from '@/interfaces/cardprops.interface';
 import { defineStore } from 'pinia';
+// Импортируем нашу обертку
+import { protectedFetch } from '../utils/api'; 
 
 export const useRelaxStore = defineStore('relax', {
-    // Состояние (state)
     state: () => ({
         items: [] as CardProps[],
         status: 'idle' as 'idle' | 'loading' | 'success' | 'error',
     }),
 
-    // Действия (actions)
     actions: {
         async fetchMeditations() {
             this.status = 'loading';
             try {      
-                const response = await fetch('http://localhost:3000/api/meditations');
+                // Используем protectedFetch с относительным путем
+                const response = await protectedFetch('/meditations');
+                
                 if (!response.ok) {
                     throw new Error(`Ошибка сервера: ${response.status}`);
                 }

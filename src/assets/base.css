@@ -10,6 +10,8 @@
   --color-text-secondary: rgba(255, 255, 255, 0.5);
   --color-text-light: rgba(37, 51, 52, 1);
   --color-text-error: rgba(231, 76, 60, 1);
+  --color-text-success: rgba(46, 204, 113, 1);
+  --color-text-info: rgba(52, 152, 219, 1);;
 }
 
 body {
