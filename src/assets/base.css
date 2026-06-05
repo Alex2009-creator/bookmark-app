@@ -2,11 +2,16 @@
   --background-bg: rgba(37, 51, 52, 1);
   --background-card: rgba(247, 243, 240, 1);
   --background-icon: rgba(255, 255, 255, 0.9);
+  --background-btn: rgba(124, 154, 146, 1);
+  --background-btn-additional: rgb(21%, 29%, 37%, 1);
 
   --color-text: rgba(0, 0, 0, 1);
   --color-text-primary: rgba(255, 255, 255, 1);
   --color-text-secondary: rgba(255, 255, 255, 0.5);
   --color-text-light: rgba(37, 51, 52, 1);
+  --color-text-error: rgba(231, 76, 60, 1);
+  --color-text-success: rgba(46, 204, 113, 1);
+  --color-text-info: rgba(52, 152, 219, 1);;
 }
 
 body {
