@@ -13,7 +13,7 @@ const router = useRouter()
 // Функция для обработки выхода
 async function handleLogout() {
   profileStore.clearProfile() // 1. Сначала очищаем данные профиля
-  authStore.logout()          // 2. Стираем токен
+  authStore.logout() // 2. Стираем токен
   await router.push('/login')
 }
 </script>
@@ -23,7 +23,7 @@ async function handleLogout() {
     <div class="box-header__logo">
       <img src="../assets/logo.png" class="box-header__img" />
     </div>
-    <div class="box-header-nav">      
+    <div class="box-header-nav">
       <router-link to="/" class="box-header-nav__item">
         <IconPlay class="box-header-nav__icon" />
         <p class="box-header-nav__text">Медитация</p>
@@ -32,10 +32,13 @@ async function handleLogout() {
         <IconChart class="box-header-nav__icon" />
         <p class="box-header-nav__text">Статистика</p>
       </router-link>
-      
+      <router-link to="/timer" class="box-header-nav__item">
+        <p class="box-header-nav__text">Время</p>
+      </router-link>
+
       <!-- Используем модификатор @click.stop.prevent для точного перехвата события -->
-      <div 
-        @click.stop.prevent="handleLogout" 
+      <div
+        @click.stop.prevent="handleLogout"
         class="box-header-nav__item box-header-nav__item--btn"
       >
         <!-- Добавлен класс box-header-nav__icon -->
