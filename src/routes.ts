@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from './components/Home.vue'
 import Statistic from './components/Statistic.vue'
+import CardCurrent from './components/TimerRelax.vue'
 import LoginView from './components/LoginView.vue'
 import RegisterView from './components/RegisterView.vue'
+import TimerRelax from './components/TimerRelax.vue'
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -10,12 +12,17 @@ export const router = createRouter({
     {
       path: '/',
       component: Home,
-      meta: { requiresAuth: true }, // 2. Защищаем главную страницу
+      meta: { requiresAuth: true }, // 1. Защищаем главную страницу
     },
     {
       path: '/statistic',
       component: Statistic,
       meta: { requiresAuth: true }, // 2. Защищаем страницу статистики
+    },
+    {
+      path: '/timer',
+      component: TimerRelax,
+      meta: { requiresAuth: true }, // 3. Защищаем страницу времени релаксации
     },
     {
       path: '/login',
@@ -24,10 +31,10 @@ export const router = createRouter({
     },
     {
       path: '/register',
-      component: RegisterView, // 3. Исправили компонент на RegisterView
+      component: RegisterView, // Исправили компонент на RegisterView
       meta: { requiresAuth: false, hideHeader: true },
     },
-    // 4. Ловушка для всех остальных несуществующих адресов (редирект на главную)
+    // Ловушка для всех остальных несуществующих адресов (редирект на главную)
     {
       path: '/:pathMatch(.*)*',
       redirect: '/',
