@@ -32,9 +32,6 @@ async function handleLogout() {
         <IconChart class="box-header-nav__icon" />
         <p class="box-header-nav__text">Статистика</p>
       </router-link>
-      <router-link to="/timer" class="box-header-nav__item">
-        <p class="box-header-nav__text">Время</p>
-      </router-link>
 
       <!-- Используем модификатор @click.stop.prevent для точного перехвата события -->
       <div

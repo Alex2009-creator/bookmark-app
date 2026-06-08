@@ -10,7 +10,7 @@ const timerStore = useTimerStore()
 
 const handleStart = () => {
   // 1. Сохраняем данные в Pinia
-  timerStore.startSession(props.title, props.duration_min)
+  timerStore.startSession(props.title, props.description, props.duration_min)
   // 2. Переходим на страницу таймера
   router.push('/timer')
 }

@@ -6,7 +6,7 @@
     </div>
     <!-- Выводим заголовок и описание из стора -->
     <div class="timer-relax__title">{{ timerStore.activeTitle || 'Медитация' }}</div>
-    <p class="timer-relax__description">Стандартная медитация для ежедневной осознанности</p>
+    <p class="timer-relax__description">{{ timerStore.activeDescription }}</p>
 
     <div class="timer-relax-box">
       <!-- Кнопка Назад (возврат на главную) -->
