@@ -1,8 +1,19 @@
 <script setup lang="ts">
 import type { CardProps } from '@/interfaces/cardprops.interface'
 import ButtonStart from './ButtonStart.vue'
+import { useRouter } from 'vue-router'
+import { useTimerStore } from '../stores/timer.store' // путь к вашему стору
 
-const { title, description, duration_min } = defineProps<CardProps>()
+const props = defineProps<CardProps>()
+const router = useRouter()
+const timerStore = useTimerStore()
+
+const handleStart = () => {
+  // 1. Сохраняем данные в Pinia
+  timerStore.startSession(props.title, props.duration_min)
+  // 2. Переходим на страницу таймера
+  router.push('/timer')
+}
 </script>
 
 <template>
@@ -10,7 +21,8 @@ const { title, description, duration_min } = defineProps<CardProps>()
     <h1 class="box-main-card__title">{{ title }}</h1>
     <p class="box-main-card__text">{{ description }}</p>
     <div class="box-main-card-container">
-      <ButtonStart />
+      <!-- Слушаем событие @start от кнопки -->
+      <ButtonStart @start="handleStart" />
       <p class="box-main-card__label">{{ duration_min }} мин</p>
     </div>
   </div>

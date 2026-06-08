@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineEmits(['start'])
+</script>
 
 <template>
-  <button type="button" class="box-main-card-container__btn">
+  <button type="button" class="box-main-card-container__btn" @click="$emit('start')">
     <span class="box-main-card-container__text">Начать</span>
     <img src="../assets/btn-start.png" alt="Начать" class="box-main-card-container__img" />
   </button>
